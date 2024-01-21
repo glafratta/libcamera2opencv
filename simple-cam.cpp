@@ -10,6 +10,9 @@
 #include <memory>
 #include <chrono>
 #include <thread>
+#include <memory>
+#include <sys/mman.h>
+#include <opencv2/opencv.hpp>
 
 #include <libcamera/libcamera.h>
 
@@ -17,6 +20,20 @@
 
 using namespace libcamera;
 static std::shared_ptr<Camera> camera;
+std::map<FrameBuffer *, std::vector<libcamera::Span<uint8_t>>> mapped_buffers;
+std::unique_ptr<CameraConfiguration> config;
+
+cv::Mat frame;
+
+
+std::vector<libcamera::Span<uint8_t>> Mmap(FrameBuffer *buffer)
+{
+	auto item = mapped_buffers.find(buffer);
+	if (item == mapped_buffers.end())
+		return {};
+	return item->second;
+}
+
 
 /*
  * --------------------------------------------------------------------
@@ -73,7 +90,6 @@ static void requestComplete(Request *request)
 	 */
 	const Request::BufferMap &buffers = request->buffers();
 	for (auto bufferPair : buffers) {
-		// (Unused) Stream *stream = bufferPair.first;
 		FrameBuffer *buffer = bufferPair.second;
 		const FrameMetadata &metadata = buffer->metadata();
 
@@ -96,6 +112,19 @@ static void requestComplete(Request *request)
 		 * Image data can be accessed here, but the FrameBuffer
 		 * must be mapped by the application
 		 */
+		StreamConfiguration &streamConfig = config->at(0);
+		unsigned int vw = streamConfig.size.width;
+		unsigned int vh = streamConfig.size.height;
+		unsigned int vstr = streamConfig.stride;
+		auto mem = Mmap(buffer);
+		frame.create(vh,vw,CV_8UC3);
+		uint ls = vw*3;
+		uint8_t *ptr = mem[0].data();
+		for (unsigned int i = 0; i < vh; i++, ptr += vstr) {
+		    memcpy(frame.ptr(i),ptr,ls);
+		}
+		// fixme: callback here
+		cv::imshow("Video",frame);
 	}
 
 	/* Re-queue the Request to the camera. */
@@ -249,8 +278,7 @@ int main()
 	 * A Camera produces a CameraConfigration based on a set of intended
 	 * roles for each Stream the application requires.
 	 */
-	std::unique_ptr<CameraConfiguration> config =
-		camera->generateConfiguration( { StreamRole::Viewfinder } );
+	 config = camera->generateConfiguration( { StreamRole::Viewfinder } );
 
 	/*
 	 * The CameraConfiguration contains a StreamConfiguration instance
@@ -336,8 +364,27 @@ int main()
 			return EXIT_FAILURE;
 		}
 
+		for (const std::unique_ptr<FrameBuffer> &buffer : allocator->buffers(cfg.stream()))
+		{
+			// "Single plane" buffers appear as multi-plane here, but we can spot them because then
+			// planes all share the same fd. We accumulate them so as to mmap the buffer only once.
+			size_t buffer_size = 0;
+			for (unsigned i = 0; i < buffer->planes().size(); i++)
+			{
+				const FrameBuffer::Plane &plane = buffer->planes()[i];
+				buffer_size += plane.length;
+				if (i == buffer->planes().size() - 1 || plane.fd.get() != buffer->planes()[i + 1].fd.get())
+				{
+					void *memory = mmap(NULL, buffer_size, PROT_READ | PROT_WRITE, MAP_SHARED, plane.fd.get(), 0);
+					mapped_buffers[buffer.get()].push_back(
+						libcamera::Span<uint8_t>(static_cast<uint8_t *>(memory), buffer_size));
+					buffer_size = 0;
+				}
+			}
+		}
+
 		size_t allocated = allocator->buffers(cfg.stream()).size();
-		std::cout << "Allocated " << allocated << " buffers for stream" << std::endl;
+		std::cout << "Allocated " << allocated << " buffers for stream" << std::endl;		
 	}
 
 	/*
@@ -408,6 +455,10 @@ int main()
 	 */
 	camera->requestCompleted.connect(requestComplete);
 
+	// fixme
+	cv::namedWindow("Video",cv::WINDOW_NORMAL);
+	
+
 	/*
 	 * --------------------------------------------------------------------
 	 * Start Capture
@@ -423,8 +474,11 @@ int main()
 	for (std::unique_ptr<Request> &request : requests)
 		camera->queueRequest(request.get());
 
+	int ch = 0;
+	while(ch!=27){
+            ch=cv::waitKey(10);
+        }
 
-	std::this_thread::sleep_for(std::chrono::seconds(10));
 	/*
 	 * --------------------------------------------------------------------
 	 * Clean Up
@@ -438,6 +492,9 @@ int main()
 	camera->release();
 	camera.reset();
 	cm->stop();
+
+	// fixme
+	cv::destroyWindow("Video");
 
 	return EXIT_SUCCESS;
 }

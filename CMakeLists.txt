@@ -10,14 +10,16 @@ set (CMAKE_CXX_FLAGS "-Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Werror -Wn
 
 find_package(PkgConfig)
 
+find_package(OpenCV REQUIRED)
+
 pkg_check_modules(LIBCAMERA REQUIRED IMPORTED_TARGET libcamera)
 message(STATUS "libcamera library found:")
 message(STATUS "    version: ${LIBCAMERA_VERSION}")
 message(STATUS "    libraries: ${LIBCAMERA_LINK_LIBRARIES}")
 message(STATUS "    include path: ${LIBCAMERA_INCLUDE_DIRS}")
 
-include_directories(${CMAKE_SOURCE_DIR} ${LIBCAMERA_INCLUDE_DIRS})
+include_directories(${CMAKE_SOURCE_DIR} ${LIBCAMERA_INCLUDE_DIRS} ${OPENCV_INCLUDE_DIRS})
 
 add_executable(simple-cam simple-cam.cpp)
 
-target_link_libraries(simple-cam PkgConfig::LIBCAMERA)
+target_link_libraries(simple-cam PkgConfig::LIBCAMERA ${OpenCV_LIBS})
