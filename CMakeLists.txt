@@ -16,17 +16,8 @@ message(STATUS "    version: ${LIBCAMERA_VERSION}")
 message(STATUS "    libraries: ${LIBCAMERA_LINK_LIBRARIES}")
 message(STATUS "    include path: ${LIBCAMERA_INCLUDE_DIRS}")
 
-# libevent is used specifically by simple-cam as its event loop.
-# Applications may use a different event handling implementation.
-pkg_check_modules(LIBEVENT REQUIRED IMPORTED_TARGET libevent_pthreads)
-message(STATUS "libevent_pthreads library found:")
-message(STATUS "    version: ${LIBEVENT_VERSION}")
-message(STATUS "    libraries: ${LIBEVENT_LINK_LIBRARIES}")
-message(STATUS "    include path: ${LIBEVENT_INCLUDE_DIRS}")
+include_directories(${CMAKE_SOURCE_DIR} ${LIBCAMERA_INCLUDE_DIRS})
 
-include_directories(${CMAKE_SOURCE_DIR} ${LIBCAMERA_INCLUDE_DIRS} ${LIBEVENT_INCLUDE_DIRS})
+add_executable(simple-cam simple-cam.cpp)
 
-add_executable(simple-cam simple-cam.cpp event_loop.cpp)
-
-target_link_libraries(simple-cam PkgConfig::LIBEVENT)
 target_link_libraries(simple-cam PkgConfig::LIBCAMERA)

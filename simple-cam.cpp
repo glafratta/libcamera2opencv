@@ -8,16 +8,15 @@
 #include <iomanip>
 #include <iostream>
 #include <memory>
+#include <chrono>
+#include <thread>
 
 #include <libcamera/libcamera.h>
-
-#include "event_loop.h"
 
 #define TIMEOUT_SEC 3
 
 using namespace libcamera;
 static std::shared_ptr<Camera> camera;
-static EventLoop loop;
 
 /*
  * --------------------------------------------------------------------
@@ -34,18 +33,11 @@ static EventLoop loop;
  * The Slot receives the Request as a parameter.
  */
 
-static void processRequest(Request *request);
-
 static void requestComplete(Request *request)
 {
 	if (request->status() == Request::RequestCancelled)
 		return;
 
-	loop.callLater(std::bind(&processRequest, request));
-}
-
-static void processRequest(Request *request)
-{
 	std::cout << std::endl
 		  << "Request completed: " << request->toString() << std::endl;
 
@@ -431,18 +423,8 @@ int main()
 	for (std::unique_ptr<Request> &request : requests)
 		camera->queueRequest(request.get());
 
-	/*
-	 * --------------------------------------------------------------------
-	 * Run an EventLoop
-	 *
-	 * In order to dispatch events received from the video devices, such
-	 * as buffer completions, an event loop has to be run.
-	 */
-	loop.timeout(TIMEOUT_SEC);
-	int ret = loop.exec();
-	std::cout << "Capture ran for " << TIMEOUT_SEC << " seconds and "
-		  << "stopped with exit status: " << ret << std::endl;
 
+	std::this_thread::sleep_for(std::chrono::seconds(10));
 	/*
 	 * --------------------------------------------------------------------
 	 * Clean Up
