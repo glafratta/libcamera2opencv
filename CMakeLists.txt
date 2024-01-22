@@ -1,12 +1,16 @@
 cmake_minimum_required(VERSION 3.6)
 
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_BUILD_TYPE "RelWithDebInfo")
+endif()
+
 project(SimpleCam
 	DESCRIPTION "A small and documented example application for libcamera"
 	LANGUAGES CXX)
 
 set (CMAKE_CXX_STANDARD 17)
 
-set (CMAKE_CXX_FLAGS "-Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Werror -Wno-unused-parameter")
+set (CMAKE_CXX_FLAGS "-Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Wno-unused-parameter")
 
 find_package(PkgConfig)
 

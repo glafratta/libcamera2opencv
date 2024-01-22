@@ -26,7 +26,7 @@ void Libcam2OpenCV::requestComplete(Request *request) {
 	std::cout << "\t" << id->name() << " = " << value.toString()
 		  << std::endl;
     }
-	
+
     /*
      * Each buffer has its own FrameMetadata to describe its state, or the
      * usage of each buffer. While in our simple capture we only provide one
