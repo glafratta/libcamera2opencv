@@ -42,13 +42,13 @@ public:
     Callback* callback = nullptr;
     FrameBufferAllocator* allocator = nullptr;
     Stream *stream = nullptr;
-    std::unique_ptr<CameraManager> cm = std::make_unique<CameraManager>();
+    std::unique_ptr<CameraManager> cm;
 
     void registerCallback(Callback* cb) {
 	callback = cb;
     }
 
-    std::vector<libcamera::Span<uint8_t>> Mmap(FrameBuffer *buffer)
+    std::vector<libcamera::Span<uint8_t>> Mmap(FrameBuffer *buffer) const
     {
 	auto item = mapped_buffers.find(buffer);
 	if (item == mapped_buffers.end())

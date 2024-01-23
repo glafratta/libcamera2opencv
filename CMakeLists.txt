@@ -28,6 +28,10 @@ message(STATUS "    version: ${LIBCAMERA_VERSION}")
 message(STATUS "    libraries: ${LIBCAMERA_LINK_LIBRARIES}")
 message(STATUS "    include path: ${LIBCAMERA_INCLUDE_DIRS}")
 
+message(STATUS "opencv:")
+message(STATUS "    version: ${OpenCV_VERSION}")
+message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
+
 include_directories(${CMAKE_SOURCE_DIR} ${LIBCAMERA_INCLUDE_DIRS} ${OPENCV_INCLUDE_DIRS})
 include(GNUInstallDirs)
 

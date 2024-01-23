@@ -101,6 +101,7 @@ void Libcam2OpenCV::start() {
      * There can only be a single CameraManager constructed within any
      * process space.
      */
+    cm  = std::make_unique<CameraManager>();
     cm->start();
 	
     /*
