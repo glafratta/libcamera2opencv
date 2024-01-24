@@ -4,29 +4,6 @@ void Libcam2OpenCV::requestComplete(Request *request) {
     if (request->status() == Request::RequestCancelled)
 	return;
 	
-    std::cout << std::endl
-	      << "Request completed: " << request->toString() << std::endl;
-	
-    /*
-     * When a request has completed, it is populated with a metadata control
-     * list that allows an application to determine various properties of
-     * the completed request. This can include the timestamp of the Sensor
-     * capture, or its gain and exposure values, or properties from the IPA
-     * such as the state of the 3A algorithms.
-     *
-     * ControlValue types have a toString, so to examine each request, print
-     * all the metadata for inspection. A custom application can parse each
-     * of these items and process them according to its needs.
-     */
-    const ControlList &requestMetadata = request->metadata();
-    for (const auto &ctrl : requestMetadata) {
-	const ControlId *id = controls::controls.at(ctrl.first);
-	const ControlValue &value = ctrl.second;
-	    
-	std::cout << "\t" << id->name() << " = " << value.toString()
-		  << std::endl;
-    }
-
     /*
      * Each buffer has its own FrameMetadata to describe its state, or the
      * usage of each buffer. While in our simple capture we only provide one
@@ -40,27 +17,6 @@ void Libcam2OpenCV::requestComplete(Request *request) {
     const Request::BufferMap &buffers = request->buffers();
     for (auto bufferPair : buffers) {
 	FrameBuffer *buffer = bufferPair.second;
-	const FrameMetadata &metadata = buffer->metadata();
-	    
-	/* Print some information about the buffer which has completed. */
-	std::cout << " seq: " << std::setw(6) << std::setfill('0') << metadata.sequence
-		  << " timestamp: " << metadata.timestamp
-		  << " bytesused: ";
-	    
-	unsigned int nplane = 0;
-	for (const FrameMetadata::Plane &plane : metadata.planes())
-	    {
-		std::cout << plane.bytesused;
-		if (++nplane < metadata.planes().size())
-		    std::cout << "/";
-	    }
-	    
-	std::cout << std::endl;
-	    
-	/*
-	 * Image data can be accessed here, but the FrameBuffer
-	 * must be mapped by the application
-	 */
 	StreamConfiguration &streamConfig = config->at(0);
 	unsigned int vw = streamConfig.size.width;
 	unsigned int vh = streamConfig.size.height;
@@ -109,7 +65,7 @@ void Libcam2OpenCV::start() {
      * system, and list them.
      */
     for (auto const &camera : cm->cameras())
-	std::cout << " - " << cameraName(camera.get()) << std::endl;
+	std::cerr << " - " << cameraName(camera.get()) << std::endl;
 	
     /*
      * --------------------------------------------------------------------
@@ -193,8 +149,6 @@ void Libcam2OpenCV::start() {
      * by the Camera depending on the Role the application has requested.
      */
     StreamConfiguration &streamConfig = config->at(0);
-    std::cout << "Default viewfinder configuration is: "
-	      << streamConfig.toString() << std::endl;
 	
     /*
      * Each StreamConfiguration parameter which is part of a
@@ -222,6 +176,8 @@ void Libcam2OpenCV::start() {
 	return;
     }
 #endif
+    // opencv compatible format
+    streamConfig.pixelFormat = libcamera::formats::BGR888;
 
     /*
      * Validating a CameraConfiguration -before- applying it will adjust it
@@ -229,8 +185,6 @@ void Libcam2OpenCV::start() {
      * requested.
      */
     config->validate();
-    std::cout << "Validated viewfinder configuration is: "
-	      << streamConfig.toString() << std::endl;
 	
     /*
      * Once we have a validated configuration, we can apply it to the
@@ -286,9 +240,6 @@ void Libcam2OpenCV::start() {
 			    }
 		    }
 	    }
-	    
-	size_t allocated = allocator->buffers(cfg.stream()).size();
-	std::cout << "Allocated " << allocated << " buffers for stream" << std::endl;		
     }
 	
     /*

@@ -17,6 +17,7 @@
 #include <sys/mman.h>
 #include <opencv2/opencv.hpp>
 
+// need to undefine QT defines here as libcamera uses the same expressions (!).
 #undef signals
 #undef slots
 #undef emit
@@ -24,17 +25,33 @@
 
 #include <libcamera/libcamera.h>
 
-#define TIMEOUT_SEC 3
-
 using namespace libcamera;
 
 class Libcam2OpenCV {
 public:
     struct Callback {
 	virtual void hasFrame(const cv::Mat &frame) = 0;
-	virtual ~Callback() {};
+	virtual ~Callback() {}
     };
+
+    /**
+     * Register the callback for the frame data
+     **/
+    void registerCallback(Callback* cb) {
+	callback = cb;
+    }
+
+    /**
+     * Starts the camera and the callback at default resolution and framerate
+     **/
+    void start();
+
+    /**
+     * Stops the camera and the callback
+     **/
+    void stop();
     
+private:
     std::shared_ptr<Camera> camera;
     std::map<FrameBuffer *, std::vector<libcamera::Span<uint8_t>>> mapped_buffers;
     std::unique_ptr<CameraConfiguration> config;
@@ -44,10 +61,6 @@ public:
     Stream *stream = nullptr;
     std::unique_ptr<CameraManager> cm;
     std::vector<std::unique_ptr<Request>> requests;
-
-    void registerCallback(Callback* cb) {
-	callback = cb;
-    }
 
     std::vector<libcamera::Span<uint8_t>> Mmap(FrameBuffer *buffer) const
     {
@@ -63,64 +76,13 @@ public:
      *
      * For each Camera::requestCompleted Signal emitted from the Camera the
      * connected Slot is invoked.
-     *
-     * The Slot is invoked in the CameraManager's thread, hence one should avoid
-     * any heavy processing here. The processing of the request shall be re-directed
-     * to the application's thread instead, so as not to block the CameraManager's
-     * thread for large amount of time.
-     *
-     * The Slot receives this and the Request as a parameter.
      */
     void requestComplete(Request *request);
 
-
-    /*
-     * ----------------------------------------------------------------------------
-     * Camera Naming.
-     *
-     * Applications are responsible for deciding how to name cameras, and present
-     * that information to the users. Every camera has a unique identifier, though
-     * this string is not designed to be friendly for a human reader.
-     *
-     * To support human consumable names, libcamera provides camera properties
-     * that allow an application to determine a naming scheme based on its needs.
-     *
-     * In this example, we focus on the location property, but also detail the
-     * model string for external cameras, as this is more likely to be visible
-     * information to the user of an externally connected device.
-     *
-     * The unique camera ID is appended for informative purposes.
-     */
     std::string cameraName(Camera *camera)
     {
-	const ControlList &props = camera->properties();
-	std::string name;
-	
-	const auto &location = props.get(properties::Location);
-	if (location) {
-	    switch (*location) {
-	    case properties::CameraLocationFront:
-		name = "Internal front camera";
-		break;
-	    case properties::CameraLocationBack:
-		name = "Internal back camera";
-		break;
-	    case properties::CameraLocationExternal:
-		name = "External camera";
-		const auto &model = props.get(properties::Model);
-		if (model)
-		    name = " '" + *model + "'";
-		break;
-	    }
-	}
-	
-	name += " (" + camera->id() + ")";
-	
-	return name;
+	return camera->id();
     }
-
-    void start();
-    void stop();
 };
 
 #endif
