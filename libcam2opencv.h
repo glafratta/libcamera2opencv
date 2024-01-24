@@ -43,6 +43,7 @@ public:
     FrameBufferAllocator* allocator = nullptr;
     Stream *stream = nullptr;
     std::unique_ptr<CameraManager> cm;
+    std::vector<std::unique_ptr<Request>> requests;
 
     void registerCallback(Callback* cb) {
 	callback = cb;
