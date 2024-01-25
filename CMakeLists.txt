@@ -30,7 +30,6 @@ include_directories(${CMAKE_SOURCE_DIR} ${LIBCAMERA_INCLUDE_DIRS} ${OPENCV_INCLU
 include(GNUInstallDirs)
 
 add_subdirectory(metadataprinter)
-add_subdirectory(opencvviwer)
 
 add_library(cam2opencv STATIC libcam2opencv.cpp)
 
