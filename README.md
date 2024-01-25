@@ -74,3 +74,6 @@ The subdirectory `qtviewer` contains a simple QT application
 which displays the camera on screen and the value of one pixel
 as a thermoemter with QWT.
 
+### openCV Image Viewer
+
+Uses the hi-GUI functions of openCV.

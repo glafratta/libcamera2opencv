@@ -4,8 +4,8 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
   set(CMAKE_BUILD_TYPE "RelWithDebInfo")
 endif()
 
-project(LibcameraToOpenCVWrapper
-	DESCRIPTION "Makes life easier for people needing to use libcamera"
+project(OpenCVViewer
+	DESCRIPTION "OPENCV viewer"
 	LANGUAGES CXX)
 
 set (CMAKE_CXX_STANDARD 17)
@@ -29,18 +29,10 @@ message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 include_directories(${CMAKE_SOURCE_DIR} ${LIBCAMERA_INCLUDE_DIRS} ${OPENCV_INCLUDE_DIRS})
 include(GNUInstallDirs)
 
-add_subdirectory(metadataprinter)
-add_subdirectory(opencvviwer)
+add_executable(opencv-viewer
+  opencvviewer.cpp
+)
 
-add_library(cam2opencv STATIC libcam2opencv.cpp)
-
-target_link_libraries(cam2opencv PkgConfig::LIBCAMERA)
-target_link_libraries(cam2opencv ${OpenCV_LIBS})
-
-set_target_properties(cam2opencv PROPERTIES
-  PUBLIC_HEADER libcam2opencv.h)
-
-install(TARGETS cam2opencv EXPORT cam2opencv-targets
-  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
-  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+target_link_libraries(opencv-viewer PkgConfig::LIBCAMERA)
+target_link_libraries(opencv-viewer ${OpenCV_LIBS})
+target_link_libraries(opencv-viewer cam2opencv)
