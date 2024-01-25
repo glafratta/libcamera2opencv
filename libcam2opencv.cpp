@@ -353,8 +353,8 @@ void Libcam2OpenCV::stop() {
      */
     camera->stop();
     allocator->free(stream);
-    delete allocator;
     camera->release();
     camera.reset();
     cm->stop();
+    delete allocator;
 }

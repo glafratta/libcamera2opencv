@@ -10,28 +10,17 @@ and then displayed with QT.
 apt install libopencv-dev libcamera-dev libqwt-qt5-dev qtdeclarative5-dev
 ```
 
-## How to compile and run the example
-
-### QT camera viewer with callback
+## Compilation and installation
 
 ```
 cmake .
 make
-./webcam-viewer
-```
-
-### Metadata printer with callback
-
-```
-cd metadataprinter
-cmake .
-make
-./printdata
+sudo make install
 ```
 
 ## How to use the libbrary
 
- 1. Include `libcam2opencv.h` and add `libcam2opencv.cpp` to your project.
+ 1. Include `libcam2opencv.h` and add `target_link_libraries(yourproj cam2opencv)` to your `CMakeLists.txt`.
 
  2. Create your custom callback
 ```
@@ -69,3 +58,19 @@ camera.start();
 ```
 camera.stop();
 ```
+
+## Examples
+
+### Metadata printer
+
+In the subdirectory `metadataprinter` is a demo which just prints the sensor
+metadata from the callback. This is useful to see what
+info is available for example the sensor timestamp to
+check the framerate.
+
+### QT Image Viewer
+
+The subdirectory `qtviewer` contains a simple QT application
+which displays the camera on screen and the value of one pixel
+as a thermoemter with QWT.
+
