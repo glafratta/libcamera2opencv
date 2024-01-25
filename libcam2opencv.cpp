@@ -3,7 +3,20 @@
 void Libcam2OpenCV::requestComplete(Request *request) {
     if (request->status() == Request::RequestCancelled)
 	return;
-	
+
+    /*
+     * When a request has completed, it is populated with a metadata control
+     * list that allows an application to determine various properties of
+     * the completed request. This can include the timestamp of the Sensor
+     * capture, or its gain and exposure values, or properties from the IPA
+     * such as the state of the 3A algorithms.
+     *
+     * ControlValue types have a toString, so to examine each request, print
+     * all the metadata for inspection. A custom application can parse each
+     * of these items and process them according to its needs.
+     */
+    const ControlList &requestMetadata = request->metadata();
+    
     /*
      * Each buffer has its own FrameMetadata to describe its state, or the
      * usage of each buffer. While in our simple capture we only provide one
@@ -29,7 +42,7 @@ void Libcam2OpenCV::requestComplete(Request *request) {
 	    memcpy(frame.ptr(i),ptr,ls);
 	}
 	if (nullptr != callback) {
-	    callback->hasFrame(frame);
+	    callback->hasFrame(frame, requestMetadata);
 	}
     }
 	
@@ -38,7 +51,7 @@ void Libcam2OpenCV::requestComplete(Request *request) {
     camera->queueRequest(request);
 }
 
-void Libcam2OpenCV::start() {
+void Libcam2OpenCV::start(Libcam2OpenCVSettings settings) {
     /*
      * --------------------------------------------------------------------
      * Create a Camera Manager.
@@ -166,16 +179,16 @@ void Libcam2OpenCV::start() {
     /*
      * The Camera configuration procedure fails with invalid parameters.
      */
-#if 0
-    streamConfig.size.width = 0; //4096
-    streamConfig.size.height = 0; //2560
-
-    int ret = camera->configure(config.get());
-    if (ret) {
-	std::cerr << "CONFIGURATION FAILED!" << std::endl;
-	return;
+    if ((settings.width > 0) && (settings.height > 0)) {
+	streamConfig.size.width = settings.width;
+	streamConfig.size.height = settings.height;
+	int ret = camera->configure(config.get());
+	if (ret) {
+	    std::cerr << "CONFIGURATION FAILED!" << std::endl;
+	    return;
+	}
     }
-#endif
+
     // opencv compatible format
     streamConfig.pixelFormat = libcamera::formats::BGR888;
 
@@ -309,6 +322,11 @@ void Libcam2OpenCV::start() {
      */
     camera->requestCompleted.connect(this,&Libcam2OpenCV::requestComplete);
 
+    if (settings.framerate > 0) {
+	int64_t frame_time = 1000000 / settings.framerate; // in us
+	controls.set(controls::FrameDurationLimits, libcamera::Span<const int64_t, 2>({ frame_time, frame_time }));
+    }
+
     /*
      * --------------------------------------------------------------------
      * Start Capture
@@ -320,7 +338,7 @@ void Libcam2OpenCV::start() {
      * For each delivered frame, the Slot connected to the
      * Camera::requestCompleted Signal is called.
      */
-    camera->start();
+    camera->start(&controls);
     for (std::unique_ptr<Request> &request : requests)
 	camera->queueRequest(request.get());
 }

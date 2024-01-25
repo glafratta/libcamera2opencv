@@ -3,8 +3,14 @@
 #include <unistd.h>
 
 struct MyCallback : Libcam2OpenCV::Callback {
-    virtual void hasFrame(const cv::Mat &frame) {
-	printf(".");
+    virtual void hasFrame(const cv::Mat &, const ControlList &metadata) {
+	for (const auto &ctrl : metadata) {
+	    const ControlId *id = controls::controls.at(ctrl.first);
+	    const ControlValue &value = ctrl.second;
+	    
+	    std::cout << "\t" << id->name() << " = " << value.toString()
+		      << std::endl;
+	}
     }
 };
 

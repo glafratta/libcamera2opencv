@@ -27,10 +27,30 @@
 
 using namespace libcamera;
 
+/**
+ * Settings
+ **/
+struct Libcam2OpenCVSettings {
+    /**
+     * Width of the video capture. A zero lets libcamera decide.
+     **/
+    unsigned int width = 0;
+    
+    /**
+     * Height of the video capture. A zero lets libcamera decide.
+     **/
+    unsigned int height = 0;
+
+    /**
+     * Framerate
+     **/
+    unsigned int framerate = 0;
+};
+
 class Libcam2OpenCV {
 public:
     struct Callback {
-	virtual void hasFrame(const cv::Mat &frame) = 0;
+	virtual void hasFrame(const cv::Mat &frame, const ControlList &metadata) = 0;
 	virtual ~Callback() {}
     };
 
@@ -44,7 +64,7 @@ public:
     /**
      * Starts the camera and the callback at default resolution and framerate
      **/
-    void start();
+    void start(Libcam2OpenCVSettings settings = Libcam2OpenCVSettings() );
 
     /**
      * Stops the camera and the callback
@@ -61,6 +81,7 @@ private:
     Stream *stream = nullptr;
     std::unique_ptr<CameraManager> cm;
     std::vector<std::unique_ptr<Request>> requests;
+    ControlList controls;
 
     std::vector<libcamera::Span<uint8_t>> Mmap(FrameBuffer *buffer) const
     {
