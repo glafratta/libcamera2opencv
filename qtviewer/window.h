@@ -26,7 +26,7 @@ public:
 
     struct MyCallback : Libcam2OpenCV::Callback {
 	Window* window = nullptr;
-	virtual void hasFrame(const cv::Mat &frame, const ControlList &) {
+	virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &) {
 	    if (nullptr != window) {
 		window->updateImage(frame);
 	    }

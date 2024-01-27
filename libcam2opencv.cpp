@@ -320,6 +320,8 @@ void Libcam2OpenCV::start(Libcam2OpenCVSettings settings) {
 	int64_t frame_time = 1000000 / settings.framerate; // in us
 	controls.set(libcamera::controls::FrameDurationLimits, libcamera::Span<const int64_t, 2>({ frame_time, frame_time }));
     }
+    controls.set(libcamera::controls::Brightness,settings.brightness);
+    controls.set(libcamera::controls::Contrast,settings.contrast);
 
     /*
      * --------------------------------------------------------------------

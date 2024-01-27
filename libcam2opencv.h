@@ -43,6 +43,16 @@ struct Libcam2OpenCVSettings {
      * Framerate. A zero lets libcamera decide the framerate.
      **/
     unsigned int framerate = 0;
+
+    /**
+     * Brightness
+     **/
+    float brightness = 0.0;
+
+    /**
+     * Contrast
+     **/
+    float contrast = 1.0;
 };
 
 class Libcam2OpenCV {
