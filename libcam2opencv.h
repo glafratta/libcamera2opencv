@@ -25,8 +25,6 @@
 
 #include <libcamera/libcamera.h>
 
-using namespace libcamera;
-
 /**
  * Settings
  **/
@@ -50,7 +48,7 @@ struct Libcam2OpenCVSettings {
 class Libcam2OpenCV {
 public:
     struct Callback {
-	virtual void hasFrame(const cv::Mat &frame, const ControlList &metadata) = 0;
+	virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &metadata) = 0;
 	virtual ~Callback() {}
     };
 
@@ -72,18 +70,18 @@ public:
     void stop();
     
 private:
-    std::shared_ptr<Camera> camera;
-    std::map<FrameBuffer *, std::vector<libcamera::Span<uint8_t>>> mapped_buffers;
-    std::unique_ptr<CameraConfiguration> config;
+    std::shared_ptr<libcamera::Camera> camera;
+    std::map<libcamera::FrameBuffer *, std::vector<libcamera::Span<uint8_t>>> mapped_buffers;
+    std::unique_ptr<libcamera::CameraConfiguration> config;
     cv::Mat frame;
     Callback* callback = nullptr;
-    FrameBufferAllocator* allocator = nullptr;
-    Stream *stream = nullptr;
-    std::unique_ptr<CameraManager> cm;
-    std::vector<std::unique_ptr<Request>> requests;
-    ControlList controls;
+    libcamera::FrameBufferAllocator* allocator = nullptr;
+    libcamera::Stream *stream = nullptr;
+    std::unique_ptr<libcamera::CameraManager> cm;
+    std::vector<std::unique_ptr<libcamera::Request>> requests;
+    libcamera::ControlList controls;
 
-    std::vector<libcamera::Span<uint8_t>> Mmap(FrameBuffer *buffer) const
+    std::vector<libcamera::Span<uint8_t>> Mmap(libcamera::FrameBuffer *buffer) const
     {
 	auto item = mapped_buffers.find(buffer);
 	if (item == mapped_buffers.end())
@@ -98,12 +96,7 @@ private:
      * For each Camera::requestCompleted Signal emitted from the Camera the
      * connected Slot is invoked.
      */
-    void requestComplete(Request *request);
-
-    std::string cameraName(Camera *camera)
-    {
-	return camera->id();
-    }
+    void requestComplete(libcamera::Request *request);
 };
 
 #endif

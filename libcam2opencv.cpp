@@ -1,7 +1,7 @@
 #include "libcam2opencv.h"
 
-void Libcam2OpenCV::requestComplete(Request *request) {
-    if (request->status() == Request::RequestCancelled)
+void Libcam2OpenCV::requestComplete(libcamera::Request *request) {
+    if (request->status() == libcamera::Request::RequestCancelled)
 	return;
 
     /*
@@ -15,7 +15,7 @@ void Libcam2OpenCV::requestComplete(Request *request) {
      * all the metadata for inspection. A custom application can parse each
      * of these items and process them according to its needs.
      */
-    const ControlList &requestMetadata = request->metadata();
+    const libcamera::ControlList &requestMetadata = request->metadata();
     
     /*
      * Each buffer has its own FrameMetadata to describe its state, or the
@@ -27,10 +27,10 @@ void Libcam2OpenCV::requestComplete(Request *request) {
      * same time, or to allow obtaining the RAW capture buffer from the
      * sensor along with the image as processed by the ISP.
      */
-    const Request::BufferMap &buffers = request->buffers();
+    const libcamera::Request::BufferMap &buffers = request->buffers();
     for (auto bufferPair : buffers) {
-	FrameBuffer *buffer = bufferPair.second;
-	StreamConfiguration &streamConfig = config->at(0);
+	libcamera::FrameBuffer *buffer = bufferPair.second;
+	libcamera::StreamConfiguration &streamConfig = config->at(0);
 	unsigned int vw = streamConfig.size.width;
 	unsigned int vh = streamConfig.size.height;
 	unsigned int vstr = streamConfig.stride;
@@ -47,7 +47,7 @@ void Libcam2OpenCV::requestComplete(Request *request) {
     }
 	
     /* Re-queue the Request to the camera. */
-    request->reuse(Request::ReuseBuffers);
+    request->reuse(libcamera::Request::ReuseBuffers);
     camera->queueRequest(request);
 }
 
@@ -70,7 +70,7 @@ void Libcam2OpenCV::start(Libcam2OpenCVSettings settings) {
      * There can only be a single CameraManager constructed within any
      * process space.
      */
-    cm  = std::make_unique<CameraManager>();
+    cm  = std::make_unique<libcamera::CameraManager>();
     cm->start();
 	
     /*
@@ -78,7 +78,7 @@ void Libcam2OpenCV::start(Libcam2OpenCVSettings settings) {
      * system, and list them.
      */
     for (auto const &camera : cm->cameras())
-	std::cerr << " - " << cameraName(camera.get()) << std::endl;
+	std::cerr << " - " << camera.get()->id() << std::endl;
 	
     /*
      * --------------------------------------------------------------------
@@ -151,7 +151,7 @@ void Libcam2OpenCV::start(Libcam2OpenCVSettings settings) {
      * A Camera produces a CameraConfigration based on a set of intended
      * roles for each Stream the application requires.
      */
-    config = camera->generateConfiguration( { StreamRole::Viewfinder } );
+    config = camera->generateConfiguration( { libcamera::StreamRole::Viewfinder } );
 
     /*
      * The CameraConfiguration contains a StreamConfiguration instance
@@ -161,7 +161,7 @@ void Libcam2OpenCV::start(Libcam2OpenCVSettings settings) {
      * Each StreamConfiguration has default size and format, assigned
      * by the Camera depending on the Role the application has requested.
      */
-    StreamConfiguration &streamConfig = config->at(0);
+    libcamera::StreamConfiguration &streamConfig = config->at(0);
 	
     /*
      * Each StreamConfiguration parameter which is part of a
@@ -226,23 +226,23 @@ void Libcam2OpenCV::start(Libcam2OpenCVSettings settings) {
      * instance and referencing a configured Camera to determine the
      * appropriate buffer size and types to create.
      */
-    allocator = new FrameBufferAllocator(camera);
+    allocator = new libcamera::FrameBufferAllocator(camera);
 
-    for (StreamConfiguration &cfg : *config) {
+    for (libcamera::StreamConfiguration &cfg : *config) {
 	int ret = allocator->allocate(cfg.stream());
 	if (ret < 0) {
 	    std::cerr << "Can't allocate buffers" << std::endl;
 	    return;
 	}
 	    
-	for (const std::unique_ptr<FrameBuffer> &buffer : allocator->buffers(cfg.stream()))
+	for (const std::unique_ptr<libcamera::FrameBuffer> &buffer : allocator->buffers(cfg.stream()))
 	    {
 		// "Single plane" buffers appear as multi-plane here, but we can spot them because then
 		// planes all share the same fd. We accumulate them so as to mmap the buffer only once.
 		size_t buffer_size = 0;
 		for (unsigned i = 0; i < buffer->planes().size(); i++)
 		    {
-			const FrameBuffer::Plane &plane = buffer->planes()[i];
+			const libcamera::FrameBuffer::Plane &plane = buffer->planes()[i];
 			buffer_size += plane.length;
 			if (i == buffer->planes().size() - 1 || plane.fd.get() != buffer->planes()[i + 1].fd.get())
 			    {
@@ -274,16 +274,16 @@ void Libcam2OpenCV::start(Libcam2OpenCVSettings settings) {
      * properties that reports the capture parameters applied to the image.
      */
     stream = streamConfig.stream();
-    const std::vector<std::unique_ptr<FrameBuffer>> &buffers = allocator->buffers(stream);
+    const std::vector<std::unique_ptr<libcamera::FrameBuffer>> &buffers = allocator->buffers(stream);
     for (unsigned int i = 0; i < buffers.size(); ++i) {
-	std::unique_ptr<Request> request = camera->createRequest();
+	std::unique_ptr<libcamera::Request> request = camera->createRequest();
 	if (!request)
 	    {
 		std::cerr << "Can't create request" << std::endl;
 		return;
 	    }
 
-	const std::unique_ptr<FrameBuffer> &buffer = buffers[i];
+	const std::unique_ptr<libcamera::FrameBuffer> &buffer = buffers[i];
 	int ret = request->addBuffer(stream, buffer.get());
 	if (ret < 0)
 	    {
@@ -291,12 +291,6 @@ void Libcam2OpenCV::start(Libcam2OpenCVSettings settings) {
 			  << std::endl;
 		return;
 	    }
-
-	/*
-	 * Controls can be added to a request on a per frame basis.
-	 */
-	ControlList &controls = request->controls();
-	controls.set(controls::Brightness, 0.5);
 
 	requests.push_back(std::move(request));
     }
@@ -324,7 +318,7 @@ void Libcam2OpenCV::start(Libcam2OpenCVSettings settings) {
 
     if (settings.framerate > 0) {
 	int64_t frame_time = 1000000 / settings.framerate; // in us
-	controls.set(controls::FrameDurationLimits, libcamera::Span<const int64_t, 2>({ frame_time, frame_time }));
+	controls.set(libcamera::controls::FrameDurationLimits, libcamera::Span<const int64_t, 2>({ frame_time, frame_time }));
     }
 
     /*
@@ -339,7 +333,7 @@ void Libcam2OpenCV::start(Libcam2OpenCVSettings settings) {
      * Camera::requestCompleted Signal is called.
      */
     camera->start(&controls);
-    for (std::unique_ptr<Request> &request : requests)
+    for (std::unique_ptr<libcamera::Request> &request : requests)
 	camera->queueRequest(request.get());
 }
 
