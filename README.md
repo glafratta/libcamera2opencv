@@ -7,7 +7,7 @@ and then displayed with QT.
 ## Prerequisites
 
 ```
-apt install libopencv-dev libcamera-dev libqwt-qt5-dev qtdeclarative5-dev
+apt install libopencv-dev libcamera-dev
 ```
 
 ## Compilation and installation
