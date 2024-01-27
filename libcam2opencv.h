@@ -32,17 +32,17 @@ using namespace libcamera;
  **/
 struct Libcam2OpenCVSettings {
     /**
-     * Width of the video capture. A zero lets libcamera decide.
+     * Width of the video capture. A zero lets libcamera decide the width.
      **/
     unsigned int width = 0;
     
     /**
-     * Height of the video capture. A zero lets libcamera decide.
+     * Height of the video capture. A zero lets libcamera decide the height.
      **/
     unsigned int height = 0;
 
     /**
-     * Framerate
+     * Framerate. A zero lets libcamera decide the framerate.
      **/
     unsigned int framerate = 0;
 };
