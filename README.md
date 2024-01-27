@@ -18,7 +18,7 @@ make
 sudo make install
 ```
 
-## How to use the libbrary
+## How to use it
 
  1. Include `libcam2opencv.h` and add `target_link_libraries(yourproj cam2opencv)` to your `CMakeLists.txt`.
 
@@ -72,4 +72,4 @@ check the framerate.
 
 The subdirectory `qtviewer` contains a simple QT application
 which displays the camera on screen and the value of one pixel
-as a thermoemter with QWT.
+as a thermometer with QWT.
