@@ -1,6 +1,7 @@
 #include "libcam2opencv.h"
 
 void Libcam2OpenCV::requestComplete(libcamera::Request *request) {
+    if (nullptr == request) return;
     if (request->status() == libcamera::Request::RequestCancelled)
 	return;
 
@@ -45,7 +46,12 @@ void Libcam2OpenCV::requestComplete(libcamera::Request *request) {
 	    callback->hasFrame(frame, requestMetadata);
 	}
     }
-	
+
+    // in case the request has been cancelled in the meantime
+    // this is a hack because libcamera should wait till a request has finisehd but doesn't
+    if (nullptr == request) return;
+    if (request->status() == libcamera::Request::RequestCancelled)
+	return;
     /* Re-queue the Request to the camera. */
     request->reuse(libcamera::Request::ReuseBuffers);
     camera->queueRequest(request);

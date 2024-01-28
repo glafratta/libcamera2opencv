@@ -18,13 +18,32 @@ struct MyCallback : Libcam2OpenCV::Callback {
 
 // Main program
 int main(int argc, char *argv[]) {
+    std::cout << "Press any key to stop" << std::endl;
+    
+    // create an instance of the camera class
     Libcam2OpenCV camera;
+
+    // create an instance of the callback
     MyCallback myCallback;
+
+    // register the callback
     camera.registerCallback(&myCallback);
+
+    // create an instance of the settings
     Libcam2OpenCVSettings settings;
+
+    // set the framerate (default is variable framerate)
     settings.framerate = 30;
-    camera.start();
+
+    // start the camera with these settings
+    camera.start(settings);
+
+    // do nothing till the user presses any key
     getchar();
+
+    // stop the camera
     camera.stop();
+
+    // that's it!
     printf("\n");
 }
