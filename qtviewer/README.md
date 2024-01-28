@@ -11,5 +11,5 @@ apt install libopencv-dev libcamera-dev libqwt-qt5-dev qtdeclarative5-dev
 ```
 cmake .
 make
-./webcam-viewer
+./qtviewer
 ```

@@ -35,4 +35,5 @@ void Window::updateImage(const cv::Mat &mat) {
 	const int w = frame.width();
 	const QColor c = frame.pixelColor(w/2, h/2);
 	thermo->setValue(c.lightness());
+	update();
 }

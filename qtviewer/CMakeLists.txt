@@ -5,7 +5,7 @@ if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
 endif()
 
 project(CamViewer
-	DESCRIPTION "A small example QT application"
+	DESCRIPTION "Example QT application which displays the camera image"
 	LANGUAGES CXX)
 
 set (CMAKE_CXX_STANDARD 17)
@@ -35,13 +35,13 @@ message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 include_directories(${CMAKE_SOURCE_DIR} ${LIBCAMERA_INCLUDE_DIRS} ${OPENCV_INCLUDE_DIRS})
 include(GNUInstallDirs)
 
-add_executable(webcam-viewer
+add_executable(qtviewer
   window.cpp
   main.cpp
 )
 
-target_link_libraries(webcam-viewer PkgConfig::LIBCAMERA)
-target_link_libraries(webcam-viewer Qt5::Widgets)
-target_link_libraries(webcam-viewer qwt-qt5)
-target_link_libraries(webcam-viewer ${OpenCV_LIBS})
-target_link_libraries(webcam-viewer cam2opencv)
+target_link_libraries(qtviewer PkgConfig::LIBCAMERA)
+target_link_libraries(qtviewer Qt5::Widgets)
+target_link_libraries(qtviewer qwt-qt5)
+target_link_libraries(qtviewer ${OpenCV_LIBS})
+target_link_libraries(qtviewer cam2opencv)

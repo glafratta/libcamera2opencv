@@ -10,7 +10,7 @@ project(LibcameraToOpenCVWrapper
 
 set (CMAKE_CXX_STANDARD 17)
 
-set (CMAKE_CXX_FLAGS "-Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Wno-unused-parameter")
+set (CMAKE_CXX_FLAGS "-pedantic -Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Wno-unused-parameter")
 
 find_package(PkgConfig)
 
