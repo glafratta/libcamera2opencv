@@ -65,7 +65,7 @@ target_link_libraries(qtviewer Qt5::Widgets)
 target_link_libraries(qtviewer qwt-qt5)
 target_link_libraries(qtviewer ${OpenCV_LIBS})
 target_link_libraries(qtviewer cam2opencv)
-#target_link_libraries(qtviewer QtViewer)
+target_link_libraries(qtviewer CLoCK)
 
 target_link_libraries(optic-flow PkgConfig::LIBCAMERA Qt5::Widgets qwt-qt5 ${OpenCV_LIBS} cam2opencv)
 #install(TARGETS QtViewer)
