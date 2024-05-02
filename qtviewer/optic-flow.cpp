@@ -1,7 +1,7 @@
 #include "window.h"
 
 #include <QApplication>
-struct MyCallback : Libcam2OpenCV::Callback{
+struct CameraCallback : Window::MyCallback{
     Window* window = nullptr;
 
 
