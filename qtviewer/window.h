@@ -27,7 +27,7 @@ public:
 
     struct MyCallback : Libcam2OpenCV::Callback {
 	Window* window = nullptr;
-    int frame=0
+    int frame=0;
 	virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &) {
         frame++;
         cv::Mat frame_grey;
