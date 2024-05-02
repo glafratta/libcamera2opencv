@@ -44,14 +44,14 @@ public:
         cv::Mat frame_grey;
         std::vector <cv::Point2f> new_corners;
         std::vector <uchar> status;
-        vector<float> err;
-        cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
+        std::vector<float> err;
+        cv::cvtColor(frame, frame_grEy, cv::COLOR_RGB2GRAY);
         //QImage::Format f= QImage::Format_Grayscale8;
         if (it%60==0){ //resample corners every 2 seconds (30fps)
             corners.clear();
             cv::goodFeaturesToTrack(frame_grey, corners, MAX_CORNERS, QUALITY_LEVEL, MIN_DISTANCE,cv::noArray(), BLOCK_SIZE);
         }
-        cv::calcOpticalFlowPyrLK(previousFrame_grey, frame_gray, corners, new_corners, status, err);
+        cv::calcOpticalFlowPyrLK(previousFrame_grey, frame_grey, corners, new_corners, status, err);
         std::vector <cv::Point2f> good_corners;
         //if (it==1){
 
@@ -62,7 +62,7 @@ public:
                 cv::circle(frame, corners[i], RADIUS, cv::Scalar(0,0,0));
             }
             
-            cv::imwrite("sample.jpeg", frame_grey);
+            cv::imwrite("sample.jpeg", frame);
 
         //}
 
