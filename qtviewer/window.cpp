@@ -30,9 +30,10 @@ Window::~Window()
 	camera.stop();
 }
 
-void Window::updateImage(const cv::Mat &mat) {
+void Window::updateImage(const cv::Mat &mat, QImage::Format f) {
 	const QImage frame(mat.data, mat.cols, mat.rows, mat.step,
-			   QImage::Format_RGB888);
+			  // QImage::Format_RGB888);
+			  f);
 	image->setPixmap(QPixmap::fromImage(frame));
 	const int h = frame.height();
 	const int w = frame.width();
