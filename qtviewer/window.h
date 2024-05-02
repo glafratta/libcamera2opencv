@@ -17,6 +17,9 @@ class Window : public QWidget
 
 public:
     Window();
+
+    Window(Libcam2OpenCV::Callback);
+    
     ~Window();
     void updateImage(const cv::Mat &mat);
 

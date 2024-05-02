@@ -22,6 +22,31 @@ Window::Window()
 	camera.start();
 }
 
+Window::Window(Libcam2OpenCV::Callback cb){
+	myCallback=cb;
+	myCallback.window = this;
+	camera.registerCallback(&myCallback);
+	
+	// set up the thermometer
+	thermo = new QwtThermo; 
+	thermo->setFillBrush( QBrush(Qt::red) );
+	thermo->setScale(0, 255);
+	thermo->show();
+
+	image = new QLabel;
+
+	// plot to the left of button and thermometer
+	hLayout = new QHBoxLayout();
+	hLayout->addWidget(thermo);
+	hLayout->addWidget(image);
+
+	setLayout(hLayout);
+	camera.start();
+
+}
+
+
+
 Window::~Window()
 {
 	camera.stop();
