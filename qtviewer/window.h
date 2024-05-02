@@ -30,10 +30,12 @@ public:
 	virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &) {
 
         cv::Mat frame_grey;
-        cv::cvtColor(frame, frame_grey, cv::COLOR_BGR2GRAY);
-	    if (nullptr != window) {
-		window->updateImage(frame_grey);
-	    }
+        cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
+        printf("frame col %i and rows %i, channels %i", frame.cols, frame.rows, frame.channels());
+        printf("frame_grey col %i and rows %i", frame_grey.cols, frame_grey.rows, frame_grey.channels());
+	    // if (nullptr != window) {
+		// window->updateImage(frame_grey);
+	    // }
 	}
     };
 
