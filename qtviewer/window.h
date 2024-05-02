@@ -9,6 +9,7 @@
 
 #include "libcam2opencv.h"
 #include <opencv2/core.hpp>
+#include <vector>
 
 // class definition 'Window'
 class Window : public QWidget
@@ -38,7 +39,7 @@ public:
 	virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &) {
         it++;
         cv::Mat frame_grey;
-        cv::vector <cv::Point2f> corners;
+        std::vector <cv::Point2f> corners;
         cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
         QImage::Format f= QImage::Format_Grayscale8;
         cv::goodFeaturesToTrack(frame_grey, corners, MAX_CORNERS, QUALITY_LEVEL, MIN_DISTANCE, BLOCK_SIZE);
