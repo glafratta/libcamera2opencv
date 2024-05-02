@@ -48,6 +48,8 @@ target_link_libraries(QtViewer cam2opencv)
 
 set_target_properties(QtViewer PROPERTIES CMAKE_POSITION_INDEPENDENT_CODE TRUE PUBLIC_HEADER "window.h")
 
+install(TARGETS QtViewer)
+
 add_executable(qtviewer
   main.cpp
 )
@@ -59,4 +61,4 @@ add_executable(qtviewer
 #target_link_libraries(qtviewer cam2opencv)
 target_link_libraries(qtviewer QtViewer)
 
-install(TARGETS QtViewer)
+#install(TARGETS QtViewer)
