@@ -33,11 +33,11 @@ public:
         cv::Mat frame_grey;
         cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
         QImage::Format f= QImage::Format_Mono;
-        // if (it==1){
-        //     printf("frame col %i and rows %i, channels %i, size:%i\n", frame.cols, frame.rows, frame.channels(), sizeof(frame.at(0,0)));
-        //     printf("frame_grey col %i and rows %i, channels %i, size:%i\n", frame_grey.cols, frame_grey.rows, frame_grey.channels(), sizeof(frame_grey.at(0,0)));
+        if (it==1){
+            printf("frame col %i and rows %i, channels %i, size:%i\n", frame.cols, frame.rows, frame.channels(), sizeof(frame.at(0)));
+            printf("frame_grey col %i and rows %i, channels %i, size:%i\n", frame_grey.cols, frame_grey.rows, frame_grey.channels(), sizeof(frame_grey.at(0)));
 
-        // }
+        }
 
 	    if (nullptr != window) {
 		window->updateImage(frame_grey, f);
