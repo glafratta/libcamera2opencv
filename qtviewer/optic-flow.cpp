@@ -13,7 +13,7 @@ struct MyCallback : Libcam2OpenCV::Callback{
 
         //convert to grey
         cv::Mat frame_grey;
-        cv::cvtColor(frame, frame_grey, cv::COLOR_BGR2GRAY);
+        cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
        // cv::imshow("grey", mat_grey);
 
         //goodfeatures to track
