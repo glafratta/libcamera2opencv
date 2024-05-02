@@ -1,7 +1,7 @@
 #include "window.h"
 
 #include <QApplication>
-struct CameraCallback : Window::MyCallback{
+struct CameraCallback : public Window::MyCallback{
     Window* window = nullptr;
 
 
