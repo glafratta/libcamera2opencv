@@ -42,7 +42,7 @@ public:
         std::vector <cv::Point2f> corners;
         cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
         QImage::Format f= QImage::Format_Grayscale8;
-        //cv::goodFeaturesToTrack(frame_grey, corners, MAX_CORNERS, QUALITY_LEVEL, MIN_DISTANCE, BLOCK_SIZE);
+        cv::goodFeaturesToTrack(frame_grey, corners, MAX_CORNERS, QUALITY_LEVEL, MIN_DISTANCE,cv::noArray(), BLOCK_SIZE);
 
         if (it==1){
             // printf("frame col %i and rows %i, channels %i, size channel:%i, size elem: %i\n", 
