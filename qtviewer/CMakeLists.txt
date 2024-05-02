@@ -51,6 +51,7 @@ set_target_properties(QtViewer PROPERTIES CMAKE_POSITION_INDEPENDENT_CODE TRUE P
 install(TARGETS QtViewer)
 
 add_executable(qtviewer
+window.cpp
   main.cpp
 )
 
