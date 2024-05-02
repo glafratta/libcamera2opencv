@@ -1,5 +1,7 @@
 # QT Viewer
 
+Modified so that library QtViewer is installed
+
 ## Prerequisites
 
 ```
@@ -10,6 +12,11 @@ apt install libopencv-dev libcamera-dev libqwt-qt5-dev qtdeclarative5-dev
 
 ```
 cmake .
-make
+sudo make install
+```
+Opens a simple Qt Window:
+ 
+```
 ./qtviewer
 ```
+
