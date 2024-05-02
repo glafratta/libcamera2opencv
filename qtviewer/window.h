@@ -55,13 +55,16 @@ public:
             cv::calcOpticalFlowPyrLK(previousFrame_grey, frame_grey, corners, new_corners, status, err);
             printf("LK\n");
         }
+        else{
+            status=std::vector<uchar>(corners.size(), 1);
+        }
 
         std::vector <cv::Point2f> good_corners;
         //if (it==1){
         int i=0;
         printf("pre-fill in status\n");
         for (i; i<corners.size();i++){
-            if (status[i]==1 || it==0){
+            if (status[i]==1){
                 good_corners.push_back(corners[i]);
             }
             cv::circle(frame, corners[i], RADIUS, cv::Scalar(0,0,0));
