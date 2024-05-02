@@ -21,7 +21,7 @@ struct MyCallback : Libcam2OpenCV::Callback{
             //crop and convert to grey
             //calcopticlalflowpyrLK
         if (nullptr != window) {
-			printf("hey ")
+			printf("hey ");
 			window->updateImage(frame_grey);
 	    }
     }
