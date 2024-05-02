@@ -29,17 +29,29 @@ public:
     struct MyCallback : Libcam2OpenCV::Callback {
 	Window* window = nullptr;
     int it=0;
+    int MAX_CORNERS=100;
+    float QUALITY_LEVEL=0.5;
+    int MIN_DISTANCE=70;
+    int BLOCK_SIZE=7;
+    float RADIUS=0.2;
+
 	virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &) {
         it++;
         cv::Mat frame_grey;
+        cv::vector <cv::Point2f> corners;
         cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
-        QImage::Format f= QImage::Format_Mono;
+        QImage::Format f= QImage::Format_Grayscale8;
+        cv::goodFeaturesToTrack(frame_grey, corners, MAX_CORNERS, QUALITY_LEVEL, MIN_DISTANCE, BLOCK_SIZE);
+
         if (it==1){
             // printf("frame col %i and rows %i, channels %i, size channel:%i, size elem: %i\n", 
             // frame.cols, frame.rows, frame.channels(), frame.elemSize1(), frame.elemSize());
             // printf("frame_grey col %i and rows %i, channels %i, size channel:%i, size elem: %i\n", 
             // frame_grey.cols, frame_grey.rows, frame_grey.channels(), frame_grey.elemSize1(), frame_grey.elemSize());
-            cv::imwrite("sample.jpeg", frame_grey);
+            for (cv::Point2f p:corners){
+                cv::circle(frame, p, RADIUS, cv::Scalar(0,0,255));
+            }
+            cv::imwrite("sample.jpeg", frame);
 
         }
 
