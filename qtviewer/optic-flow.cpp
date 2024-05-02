@@ -22,7 +22,7 @@ struct MyCallback : Libcam2OpenCV::Callback{
             //crop and convert to grey
             //calcopticlalflowpyrLK
         if (nullptr != window) {
-		window->updateImage(frame);
+		window->updateImage(frame_grey);
 	    }
     }
 };
