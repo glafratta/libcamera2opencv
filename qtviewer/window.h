@@ -40,7 +40,6 @@ public:
     cv::Mat previousFrame_grey;
 
 	virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &) {
-        it++;
         cv::Mat frame_grey;
         std::vector <cv::Point2f> new_corners;
         std::vector <uchar> status;
@@ -51,16 +50,19 @@ public:
             corners.clear();
             cv::goodFeaturesToTrack(frame_grey, corners, MAX_CORNERS, QUALITY_LEVEL, MIN_DISTANCE,cv::noArray(), BLOCK_SIZE);
         }
-        cv::calcOpticalFlowPyrLK(previousFrame_grey, frame_grey, corners, new_corners, status, err);
+        if (it>0){
+            cv::calcOpticalFlowPyrLK(previousFrame_grey, frame_grey, corners, new_corners, status, err);
+        }
+
         std::vector <cv::Point2f> good_corners;
         //if (it==1){
 
-            for (int i=0; i<corners.size();i++){
-                if (status[i]==1){
-                    good_corners.push_back(corners[i]);
-                }
-                cv::circle(frame, corners[i], RADIUS, cv::Scalar(0,0,0));
+        for (int i=0; i<corners.size();i++){
+            if (status[i]==1 || it==0){
+                good_corners.push_back(corners[i]);
             }
+            cv::circle(frame, corners[i], RADIUS, cv::Scalar(0,0,0));
+        }
             
             cv::imwrite("sample.jpeg", frame);
 
@@ -71,6 +73,7 @@ public:
 	    }
         previousFrame_grey=frame_grey.clone();
         corners=good_corners;
+        it++;
 	}
     };
 
