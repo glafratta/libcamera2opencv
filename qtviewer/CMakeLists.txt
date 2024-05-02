@@ -52,11 +52,11 @@ add_executable(qtviewer
   main.cpp
 )
 
-target_link_libraries(qtviewer PkgConfig::LIBCAMERA)
-target_link_libraries(qtviewer Qt5::Widgets)
-target_link_libraries(qtviewer qwt-qt5)
-target_link_libraries(qtviewer ${OpenCV_LIBS})
-target_link_libraries(qtviewer cam2opencv)
+#target_link_libraries(qtviewer PkgConfig::LIBCAMERA)
+#target_link_libraries(qtviewer Qt5::Widgets)
+#target_link_libraries(qtviewer qwt-qt5)
+#target_link_libraries(qtviewer ${OpenCV_LIBS})
+#target_link_libraries(qtviewer cam2opencv)
 target_link_libraries(qtviewer QtViewer)
 
 install(TARGETS QtViewer)
