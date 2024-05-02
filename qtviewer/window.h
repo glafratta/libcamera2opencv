@@ -45,7 +45,7 @@ public:
         std::vector <cv::Point2f> new_corners;
         std::vector <uchar> status;
         std::vector<float> err;
-        cv::cvtColor(frame, frame_grEy, cv::COLOR_RGB2GRAY);
+        cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
         //QImage::Format f= QImage::Format_Grayscale8;
         if (it%60==0){ //resample corners every 2 seconds (30fps)
             corners.clear();
@@ -70,7 +70,7 @@ public:
 		window->updateImage(frame);
 	    }
         previousFrame_grey=frame_grey.clone();
-        corners=good_new;
+        corners=good_corners;
 	}
     };
 
