@@ -34,7 +34,7 @@ public:
     float QUALITY_LEVEL=0.5;
     int MIN_DISTANCE=70;
     int BLOCK_SIZE=7;
-    float RADIUS=0.2;
+    float RADIUS=5;
 
 	virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &) {
         it++;
