@@ -13,8 +13,7 @@ struct MyCallback : Libcam2OpenCV::Callback{
 
         //convert to grey
         cv::Mat frame_grey;
-        cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
-       // cv::imshow("grey", mat_grey);
+        cv::cvtColor(frame, frame_grey, cv::COLOR_BGR2GRAY);
 
         //goodfeatures to track
 
@@ -22,7 +21,7 @@ struct MyCallback : Libcam2OpenCV::Callback{
             //crop and convert to grey
             //calcopticlalflowpyrLK
         if (nullptr != window) {
-		window->updateImage(frame_grey);
+			window->updateImage(frame_grey);
 	    }
     }
 };
