@@ -39,6 +39,13 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 add_library(QtViewer window.h window.cpp)
 
+target_link_libraries(QtViewer PkgConfig::LIBCAMERA)
+target_link_libraries(QtViewer Qt5::Widgets)
+target_link_libraries(QtViewer qwt-qt5)
+target_link_libraries(QtViewer ${OpenCV_LIBS})
+target_link_libraries(QtViewer cam2opencv)
+
+
 set_target_properties(QtViewer PROPERTIES CMAKE_POSITION_INDEPENDENT_CODE TRUE PUBLIC_HEADER "window.h")
 
 add_executable(qtviewer
