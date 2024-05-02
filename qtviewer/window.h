@@ -50,7 +50,7 @@ public:
             // printf("frame_grey col %i and rows %i, channels %i, size channel:%i, size elem: %i\n", 
             // frame_grey.cols, frame_grey.rows, frame_grey.channels(), frame_grey.elemSize1(), frame_grey.elemSize());
             for (cv::Point2f p:corners){
-                cv::circle(frame, p, RADIUS, cv::Scalar(0,0,255));
+                cv::circle(frame_grey, p, RADIUS, cv::Scalar(0,0,0));
             }
             cv::imwrite("sample.jpeg", frame);
 
