@@ -27,12 +27,16 @@ public:
 
     struct MyCallback : Libcam2OpenCV::Callback {
 	Window* window = nullptr;
+    int frame=0
 	virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &) {
-
+        frame++;
         cv::Mat frame_grey;
         cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
-        printf("frame col %i and rows %i, channels %i, size:%i", frame.cols, frame.rows, frame.channels(), sizeof(frame[0][0]));
-        printf("frame_grey col %i and rows %i, channels %i, size:%i", frame_grey.cols, frame_grey.rows, frame_grey.channels(), sizeof(frame_grey[0][0]));
+        if (frame==1){
+            printf("frame col %i and rows %i, channels %i, size:%i\n", frame.cols, frame.rows, frame.channels(), sizeof(frame[0][0]));
+            printf("frame_grey col %i and rows %i, channels %i, size:%i\n", frame_grey.cols, frame_grey.rows, frame_grey.channels(), sizeof(frame_grey[0][0]));
+
+        }
 	    // if (nullptr != window) {
 		// window->updateImage(frame_grey);
 	    // }
