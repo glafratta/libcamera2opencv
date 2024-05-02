@@ -37,29 +37,29 @@ include(GNUInstallDirs)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-add_library(QtViewer window.h window.cpp)
+#add_library(QtViewer window.h window.cpp)
 
-target_link_libraries(QtViewer PkgConfig::LIBCAMERA)
-target_link_libraries(QtViewer Qt5::Widgets)
-target_link_libraries(QtViewer qwt-qt5)
-target_link_libraries(QtViewer ${OpenCV_LIBS})
-target_link_libraries(QtViewer cam2opencv)
+#target_link_libraries(QtViewer PkgConfig::LIBCAMERA)
+#target_link_libraries(QtViewer Qt5::Widgets)
+#target_link_libraries(QtViewer qwt-qt5)
+#target_link_libraries(QtViewer ${OpenCV_LIBS})
+#target_link_libraries(QtViewer cam2opencv)
 
 
-set_target_properties(QtViewer PROPERTIES CMAKE_POSITION_INDEPENDENT_CODE TRUE PUBLIC_HEADER "window.h")
+#set_target_properties(QtViewer PROPERTIES CMAKE_POSITION_INDEPENDENT_CODE TRUE PUBLIC_HEADER "window.h")
 
-install(TARGETS QtViewer)
+#install(TARGETS QtViewer)
 
 add_executable(qtviewer
 window.cpp
   main.cpp
 )
 
-#target_link_libraries(qtviewer PkgConfig::LIBCAMERA)
-#target_link_libraries(qtviewer Qt5::Widgets)
-#target_link_libraries(qtviewer qwt-qt5)
-#target_link_libraries(qtviewer ${OpenCV_LIBS})
-#target_link_libraries(qtviewer cam2opencv)
-target_link_libraries(qtviewer QtViewer)
+target_link_libraries(qtviewer PkgConfig::LIBCAMERA)
+target_link_libraries(qtviewer Qt5::Widgets)
+target_link_libraries(qtviewer qwt-qt5)
+target_link_libraries(qtviewer ${OpenCV_LIBS})
+target_link_libraries(qtviewer cam2opencv)
+#target_link_libraries(qtviewer QtViewer)
 
 #install(TARGETS QtViewer)
