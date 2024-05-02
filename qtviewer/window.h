@@ -59,6 +59,7 @@ public:
         std::vector <cv::Point2f> good_corners;
         //if (it==1){
         int i=0;
+        printf("pre-fill in status\n");
         for (i; i<corners.size();i++){
             if (status[i]==1 || it==0){
                 good_corners.push_back(corners[i]);
