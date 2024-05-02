@@ -32,8 +32,8 @@ public:
 	Window* window = nullptr;
     int it=0;
     int MAX_CORNERS=100;
-    float QUALITY_LEVEL=0.5;
-    int MIN_DISTANCE=70;
+    float QUALITY_LEVEL=0.3;
+    int MIN_DISTANCE=7;
     int BLOCK_SIZE=7;
     float RADIUS=5;
     std::vector <cv::Point2f> corners;
@@ -48,10 +48,10 @@ public:
         //QImage::Format f= QImage::Format_Grayscale8;
         if (it%60==0){ //resample corners every 2 seconds (30fps)
             corners.clear();
-            cv::goodFeaturesToTrack(frame_grey, corners, MAX_CORNERS, QUALITY_LEVEL, MIN_DISTANCE,cv::noArray(), BLOCK_SIZE);
+            cv::goodFeaturesToTrack(frame_grey, corners, MAX_CORNERS, QUALITY_LEVEL, MIN_DISTANCE);
             printf("GFT\n");
         }
-        if (it>0){
+        if (it>0 & !corners.empty()){
             cv::calcOpticalFlowPyrLK(previousFrame_grey, frame_grey, corners, new_corners, status, err);
             printf("LK\n");
         }
@@ -62,7 +62,7 @@ public:
         std::vector <cv::Point2f> good_corners;
         //if (it==1){
         int i=0;
-        printf("pre-fill in status\n");
+        printf("pre-fill in status, new corners size =%i\n", new_corners.size());
         for (i; i<corners.size();i++){
             if (status[i]==1){
                 good_corners.push_back(corners[i]);
