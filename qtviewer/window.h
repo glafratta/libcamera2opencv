@@ -17,8 +17,6 @@ class Window : public QWidget
 
 public:
     Window();
-
-    Window(Libcam2OpenCV::Callback);
     
     ~Window();
     void updateImage(const cv::Mat &mat);
@@ -30,8 +28,11 @@ public:
     struct MyCallback : Libcam2OpenCV::Callback {
 	Window* window = nullptr;
 	virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &) {
+
+        cv::Mat frame_grey;
+        cv::cvtColor(frame, frame_grey, cv::COLOR_BGR2GRAY);
 	    if (nullptr != window) {
-		window->updateImage(frame);
+		window->updateImage(frame_grey);
 	    }
 	}
     };
