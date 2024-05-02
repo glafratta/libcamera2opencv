@@ -31,6 +31,8 @@ include(GNUInstallDirs)
 
 add_subdirectory(metadataprinter)
 
+add_subdirectory(qtviewer)
+
 add_library(cam2opencv STATIC libcam2opencv.cpp)
 
 target_link_libraries(cam2opencv PkgConfig::LIBCAMERA)
