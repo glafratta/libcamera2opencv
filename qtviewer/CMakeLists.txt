@@ -35,8 +35,13 @@ message(STATUS "    include path: ${OpenCV_INCLUDE_DIRS}")
 include_directories(${CMAKE_SOURCE_DIR} ${LIBCAMERA_INCLUDE_DIRS} ${OPENCV_INCLUDE_DIRS})
 include(GNUInstallDirs)
 
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+
+add_library(QtViewer window.h window.cpp)
+
+set_target_properties(QtViewer PROPERTIES CMAKE_POSITION_INDEPENDENT_CODE TRUE PUBLIC_HEADER "window.h")
+
 add_executable(qtviewer
-  window.cpp
   main.cpp
 )
 
@@ -45,3 +50,4 @@ target_link_libraries(qtviewer Qt5::Widgets)
 target_link_libraries(qtviewer qwt-qt5)
 target_link_libraries(qtviewer ${OpenCV_LIBS})
 target_link_libraries(qtviewer cam2opencv)
+target_link_libraries(qtviewer QtViewer)
