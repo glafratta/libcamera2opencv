@@ -30,10 +30,12 @@ struct CameraCallback : Window::MyCallback{
 // Main program
 int main(int argc, char *argv[])
 {
+	CameraCallback cameraCallback;
 	QApplication app(argc, argv);
 
 	// create the window
 	Window window;
+	window.myCallback=cameraCallback;
 	window.show();
 
 	// execute the application
