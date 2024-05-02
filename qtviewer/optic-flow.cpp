@@ -5,7 +5,7 @@ struct CameraCallback : public Window::MyCallback{
     Window* window = nullptr;
 
 
-    void hasFrame(const cv::Mat &frame, const libcamera::ControlList &){
+    virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &){
         //featureparams (shi-tomasi corner detection) : these are fed to goodfeatures to track
         //lk params
 
@@ -20,6 +20,7 @@ struct CameraCallback : public Window::MyCallback{
         //while(image is there)
             //crop and convert to grey
             //calcopticlalflowpyrLK
+		printf("oi ");
         if (nullptr != window) {
 			printf("hey ");
 			window->updateImage(frame_grey);
