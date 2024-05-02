@@ -49,28 +49,32 @@ public:
         if (it%60==0){ //resample corners every 2 seconds (30fps)
             corners.clear();
             cv::goodFeaturesToTrack(frame_grey, corners, MAX_CORNERS, QUALITY_LEVEL, MIN_DISTANCE,cv::noArray(), BLOCK_SIZE);
+            printf("GFT\n");
         }
         if (it>0){
             cv::calcOpticalFlowPyrLK(previousFrame_grey, frame_grey, corners, new_corners, status, err);
+            printf("LK\n");
         }
 
         std::vector <cv::Point2f> good_corners;
         //if (it==1){
-
-        for (int i=0; i<corners.size();i++){
+        int i=0;
+        for (i; i<corners.size();i++){
             if (status[i]==1 || it==0){
                 good_corners.push_back(corners[i]);
             }
             cv::circle(frame, corners[i], RADIUS, cv::Scalar(0,0,0));
         }
+        printf("corners %i\n", i);
             
-            cv::imwrite("sample.jpeg", frame);
+            //cv::imwrite("sample.jpeg", frame);
 
         //}
 
 	    if (nullptr != window) {
-		window->updateImage(frame);
+		    window->updateImage(frame);
 	    }
+        printf("updated %i\n", it);
         previousFrame_grey=frame_grey.clone();
         corners=good_corners;
         it++;
