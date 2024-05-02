@@ -10,7 +10,7 @@
 #include "libcam2opencv.h"
 #include <opencv2/core.hpp>
 #include <vector>
-#include "sensor.h"
+
 
 // class definition 'Window'
 class Window : public QWidget
