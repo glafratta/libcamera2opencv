@@ -32,7 +32,7 @@ public:
 	Window* window = nullptr;
     int it=0;
     int MAX_CORNERS=100;
-    float QUALITY_LEVEL=0.3;
+    float QUALITY_LEVEL=0.5;
     int MIN_DISTANCE=7;
     int BLOCK_SIZE=7;
     float RADIUS=5;
@@ -69,7 +69,13 @@ public:
             }
             cv::circle(frame, corners[i], RADIUS, cv::Scalar(0,0,0));
         }
-        printf("corners %i\n", i);
+        if (!corners.empty()&!new_corners.empty()){
+            float dx=corners[0].x-new_corners[0].x;
+            float dy=corners[0].y-new_corners[0].y;
+            float r= sqrt(dx*dx+dy*dy);
+            printf("distance: x=%f, y=%f, r=%f\n", dx, dy, r);
+        }
+        printf("good corners = %i, corners %i\n", good_corners.size(),i);
             
             //cv::imwrite("sample.jpeg", frame);
 
