@@ -32,9 +32,9 @@ public:
     struct MyCallback : Libcam2OpenCV::Callback {
 	Window* window = nullptr;
     int it=0;
-    int MAX_CORNERS=100;
-    float QUALITY_LEVEL=0.1;
-    int MIN_DISTANCE=3;
+    int MAX_CORNERS=30;
+    float QUALITY_LEVEL=0.3;
+    int MIN_DISTANCE=7;
     int BLOCK_SIZE=7;
     float RADIUS=5;
     std::vector <cv::Point2f> corners; //must be single-precision float
@@ -68,9 +68,9 @@ public:
             if (status[i]==1){
                 good_corners.push_back(corners[i]);
             }
-            cv::circle(frame, corners[i], RADIUS, cv::Scalar(0,0,0));
         }
         if (!corners.empty()&!new_corners.empty()){
+            cv::circle(frame, new_corners[0], RADIUS, cv::Scalar(0,0,0));
             float dx=corners[0].x-new_corners[0].x;
             float dy=corners[0].y-new_corners[0].y;
             float r= sqrt(dx*dx+dy*dy);
