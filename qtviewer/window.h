@@ -12,6 +12,7 @@
 #include <vector>
 
 
+
 // class definition 'Window'
 class Window : public QWidget
 {
@@ -32,11 +33,11 @@ public:
 	Window* window = nullptr;
     int it=0;
     int MAX_CORNERS=100;
-    float QUALITY_LEVEL=0.5;
-    int MIN_DISTANCE=7;
+    float QUALITY_LEVEL=0.1;
+    int MIN_DISTANCE=3;
     int BLOCK_SIZE=7;
     float RADIUS=5;
-    std::vector <cv::Point2f> corners;
+    std::vector <cv::Point2f> corners; //must be single-precision float
     cv::Mat previousFrame_grey;
 
 	virtual void hasFrame(const cv::Mat &frame, const libcamera::ControlList &) {
@@ -52,7 +53,7 @@ public:
             printf("GFT\n");
         }
         if (it>0 & !corners.empty()){
-            cv::calcOpticalFlowPyrLK(previousFrame_grey, frame_grey, corners, new_corners, status, err);
+            cv::calcOpticalFlowPyrLK(previousFrame_grey, frame_grey, corners, new_corners, status, err); //no flags: error is L1 distance between points /tot pixels
             printf("LK\n");
         }
         else{
