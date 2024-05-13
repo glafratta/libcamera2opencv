@@ -23,7 +23,7 @@
 #undef emit
 #undef foreach
 
-#include <libcamera/libcamera.h>
+#include "libcamera/libcamera.h"
 
 /**
  * Settings
