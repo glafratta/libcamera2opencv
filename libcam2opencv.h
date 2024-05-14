@@ -16,6 +16,9 @@
 #include <memory>
 #include <sys/mman.h>
 #include <opencv2/core.hpp>
+#include <opencv2/imgproc.hpp>
+#include <opencv2/highgui.hpp>
+
 
 // need to undefine QT defines here as libcamera uses the same expressions (!).
 #undef signals
