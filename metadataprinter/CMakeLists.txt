@@ -12,6 +12,8 @@ set (CMAKE_CXX_STANDARD 17)
 
 find_package(PkgConfig)
 
+find_package(OpenCV REQUIRED)
+
 set (CMAKE_CXX_FLAGS "-Wall -Winvalid-pch -Wnon-virtual-dtor -Wextra -Wno-unused-parameter")
 pkg_check_modules(LIBCAMERA REQUIRED IMPORTED_TARGET libcamera)
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_SOURCE_DIR}/.. ${LIBCAMERA_INCLUDE_DIRS} ${OPENCV_INCLUDE_DIRS})
