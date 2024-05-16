@@ -34,7 +34,7 @@ public:
     int it=0;
     int MAX_CORNERS=30;
     float QUALITY_LEVEL=0.3;
-    int MIN_DISTANCE=0;
+    int MIN_DISTANCE=40;
     int BLOCK_SIZE=7;
     float RADIUS=5;
     std::vector <cv::Point2f> corners; //must be single-precision float
