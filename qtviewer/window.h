@@ -47,11 +47,11 @@ public:
         std::vector<float> err;
         cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
         //QImage::Format f= QImage::Format_Grayscale8;
-        if (it%60==0){ //resample corners every 2 seconds (30fps)
-            corners.clear();
+        //if (it%60==0){ //resample corners every 2 seconds (30fps)
+           // corners.clear();
             cv::goodFeaturesToTrack(frame_grey, corners, MAX_CORNERS, QUALITY_LEVEL, MIN_DISTANCE);
-            printf("GFT\n");
-        }
+          //  printf("GFT\n");
+        //}
         if (it>0 & !corners.empty()){
             cv::calcOpticalFlowPyrLK(previousFrame_grey, frame_grey, corners, new_corners, status, err); //no flags: error is L1 distance between points /tot pixels
             printf("LK\n");
