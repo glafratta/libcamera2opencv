@@ -32,7 +32,7 @@ public:
     struct MyCallback : Libcam2OpenCV::Callback {
 	Window* window = nullptr;
     int it=0;
-    int MAX_CORNERS=2;
+    int MAX_CORNERS=30;
     float QUALITY_LEVEL=0.3;
     int MIN_DISTANCE=7;
     int BLOCK_SIZE=7;
