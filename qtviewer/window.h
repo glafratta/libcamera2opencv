@@ -34,7 +34,7 @@ public:
     int it=0;
     int MAX_CORNERS=30;
     float QUALITY_LEVEL=0.3;
-    int MIN_DISTANCE=7;
+    int MIN_DISTANCE=0;
     int BLOCK_SIZE=7;
     float RADIUS=5;
     std::vector <cv::Point2f> corners; //must be single-precision float
@@ -70,10 +70,7 @@ public:
             }
         }
         if (!corners.empty()&!new_corners.empty()){
-            cv::Point2f new_approx;
-            new_approx.x= std::round(new_corners[0].x*100)/100;
-            new_approx.y= std::round(new_corners[0].y*100)/100;
-            cv::circle(frame, new_approx, RADIUS, cv::Scalar(0,0,0));
+            cv::circle(frame, new_corners[0], RADIUS, cv::Scalar(0,0,0));
             float dx=corners[0].x-new_corners[0].x;
             float dy=corners[0].y-new_corners[0].y;
             float r= sqrt(dx*dx+dy*dy);
