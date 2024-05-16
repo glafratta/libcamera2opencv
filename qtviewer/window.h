@@ -70,7 +70,10 @@ public:
             }
         }
         if (!corners.empty()&!new_corners.empty()){
-            cv::circle(frame, new_corners[0], RADIUS, cv::Scalar(0,0,0));
+            cv::Pointf2 new_approx;
+            new_approx.x= std::round(new_corners[0].x*100)/100;
+            new_approx.y= std::round(new_corners[0].y*100)/100;
+            cv::circle(frame, new_approx, RADIUS, cv::Scalar(0,0,0));
             float dx=corners[0].x-new_corners[0].x;
             float dy=corners[0].y-new_corners[0].y;
             float r= sqrt(dx*dx+dy*dy);
