@@ -45,7 +45,7 @@ public:
         std::vector <cv::Point2f> new_corners;
         std::vector <uchar> status;
         std::vector<float> err;
-        cv::Mat frame_cropped=frame(cv::Range(0, frame.rows), cv::Range(frame.cols*1/3, frame.cols*2/3));
+        cv::Mat frame_cropped=frame//;(cv::Range(0, frame.rows), cv::Range(frame.cols*1/3, frame.cols*2/3));
         cv::cvtColor(frame_cropped, frame_grey, cv::COLOR_RGB2GRAY);
         //QImage::Format f= QImage::Format_Grayscale8;
         //if (it%60==0){ //resample corners every 2 seconds (30fps)
