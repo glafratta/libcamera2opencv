@@ -45,7 +45,8 @@ public:
         std::vector <cv::Point2f> new_corners;
         std::vector <uchar> status;
         std::vector<float> err;
-        cv::cvtColor(frame, frame_grey, cv::COLOR_RGB2GRAY);
+        cv::Mat frame_cropped=frame(cv::Range(0, frame.width()), cv::Range(frame.height()*2/3, frame.height()));
+        cv::cvtColor(frame_cropped, frame_grey, cv::COLOR_RGB2GRAY);
         //QImage::Format f= QImage::Format_Grayscale8;
         //if (it%60==0){ //resample corners every 2 seconds (30fps)
            // corners.clear();
@@ -70,7 +71,7 @@ public:
             }
         }
         if (!corners.empty()&!new_corners.empty()){
-            cv::circle(frame, new_corners[0], RADIUS, cv::Scalar(0,0,0));
+            cv::circle(frame_cropped, new_corners[0], RADIUS, cv::Scalar(0,0,0));
             float dx=corners[0].x-new_corners[0].x;
             float dy=corners[0].y-new_corners[0].y;
             float r= sqrt(dx*dx+dy*dy);
